@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sessão - EduMentor</title>
+  <link rel="stylesheet" href="Sessao.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="logo">EduMentor</div>
+    <nav>
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Meu Perfil</a></li>
+        <li><a href="#">Sair</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Área de Sessão -->
+  <main class="sessao-container">
+    <!-- Simulação de vídeo chamada -->
+    <div class="video-call">
+      <img src="/img/call.jpg" alt="Video Chamada">
+    </div>
+
+    <!-- Chat -->
+    <div class="chat-container">
+      <div class="chat-messages" id="chat-messages">
+        <div class="message mentor">Olá! Pronto para a aula?</div>
+      </div>
+      <div class="chat-input">
+        <input type="text" id="mensagem" placeholder="Digite sua mensagem...">
+        <button onclick="enviarMensagem()">Enviar</button>
+      </div>
+      <div class="encerrar-container">
+        <button id="encerrar-sessao">Encerrar Sessão</button>
+      </div>
+    </div>
+
+    <!-- Modal de Avaliação -->
+    <div id="avaliacao-modal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Avalie a Sessão</h2>
+
+        <!-- Estrelas -->
+        <div class="estrelas">
+          <span data-value="1">&#9733;</span>
+          <span data-value="2">&#9733;</span>
+          <span data-value="3">&#9733;</span>
+          <span data-value="4">&#9733;</span>
+          <span data-value="5">&#9733;</span>
+        </div>
+
+        <!-- Campo de comentário -->
+        <textarea id="comentario" placeholder="Deixe um comentário (opcional)..."></textarea>
+
+        <button id="enviar-avaliacao">Enviar Avaliação</button>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    function enviarMensagem() {
+      const input = document.getElementById('mensagem');
+      const texto = input.value.trim();
+      if (texto === '') return;
+      const chat = document.getElementById('chat-messages');
+      const novaMsg = document.createElement('div');
+      novaMsg.className = 'message aluno';
+      novaMsg.textContent = texto;
+      chat.appendChild(novaMsg);
+      chat.scrollTop = chat.scrollHeight;
+      input.value = '';
+    }
+
+    const botaoEncerrar = document.getElementById('encerrar-sessao');
+    const modal = document.getElementById('avaliacao-modal');
+    const fecharModal = document.querySelector('.modal .close');
+    const estrelas = document.querySelectorAll('.estrelas span');
+    let avaliacao = 0;
+
+    // Abrir modal ao clicar em encerrar sessão
+    botaoEncerrar.addEventListener('click', () => {
+      modal.style.display = 'flex';
+    });
+
+    // Fechar modal
+    fecharModal.addEventListener('click', () => {
+      modal.style.display = 'none';
+    });
+
+    // Selecionar estrelas
+    estrelas.forEach(estrela => {
+      estrela.addEventListener('mouseover', () => {
+        estrelas.forEach(s => s.classList.remove('hover'));
+        for (let i = 0; i < estrela.dataset.value; i++) {
+          estrelas[i].classList.add('hover');
+        }
+      });
+
+      estrela.addEventListener('mouseout', () => {
+        estrelas.forEach(s => s.classList.remove('hover'));
+      });
+
+      estrela.addEventListener('click', () => {
+        avaliacao = estrela.dataset.value;
+        estrelas.forEach(s => s.classList.remove('selected'));
+        for (let i = 0; i < avaliacao; i++) {
+          estrelas[i].classList.add('selected');
+        }
+      });
+    });
+
+    // Enviar avaliação
+    document.getElementById('enviar-avaliacao').addEventListener('click', () => {
+      const comentario = document.getElementById('comentario').value.trim();
+      alert(`✅ Obrigado pela sua avaliação de ${avaliacao} estrela(s)!\n\n🗨️ Comentário: ${comentario || 'Nenhum comentário.'}`);
+      modal.style.display = 'none';
+      document.getElementById('comentario').value = '';
+      estrelas.forEach(s => s.classList.remove('selected', 'hover'));
+    });
+  </script>
+</body>
+</html>
